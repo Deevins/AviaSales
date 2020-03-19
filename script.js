@@ -1,3 +1,4 @@
+// собираем все необходимые инпуты и списки
 const formSearch = document.querySelector('.form-search'),
     inputCitiesFrom = document.querySelector('.input__cities-from'),
     dropdownCitiesFrom = document.querySelector('.dropdown__cities-from'),
@@ -6,56 +7,91 @@ const formSearch = document.querySelector('.form-search'),
     inputDateDepart = document.querySelector('.input__date-depart');
 
 
+// создаем массив городов
+let cities = [];
 
-const cities = ['Москва', 'Санкт-Петербург', 'Минск', 'Караганда', 'Челябинск', 'Керчь', 'Симферополь', 'Волгоград', 'Самара', 'Днепропетровск', 'Екатеринбург', 'Одесса', 'Ухань', 'Нижний Новгород', 'Калининград', 'Вроцлав', 'Ростов-на-Дону', 'Киев', 'Владивосток', 'Нью-Йорк', 'Лондон', 'Тегеран', 'Канны', 'Оттава'];
+
+citiesApi = 'dataBase/cities.json';
+proxy = 'https://cors-anywhere.herokuapp.com/',
+API_KEY = 'fc159f18193c7078daedbf2e6a5fa6c1',
+calendar = 'http://min-prices.aviasales.ru/calendar_preload';
+
+const getData = (url, callback) => {
+    const request = new XMLHttpRequest();
+
+    request.open('GET', url);
+
+    request.addEventListener('readystatechange', () => {
+        if (request.readyState !== 4) return;
+
+        if (request.status === 200) {
+            callback(request.response);
+        } else {
+            console.error(request.status);
+        }
+    });
+
+    request.send();
+};
 
 
 
+//помещаем в переменную функцию для выбора города
 const showCities = (input, list) => {
     list.textContent = '';
 
     if (input.value !== '') {
         const citiesFilter = cities.filter((item) => {
-            const fixedItem = item.toLowerCase();
+            const fixedItem = item.name.toLowerCase();
             return fixedItem.includes(input.value.toLowerCase());
+
         });
 
         citiesFilter.forEach((item) => {
             const li = document.createElement('li');
             li.classList.add('dropdown__city');
-            li.textContent = item;
+            li.textContent = item.name;
             list.append(li);
         });
     }
 };
 
-//listeners
+// при наборе чего либо в инпуте города вылета вызываем функцию, помогающую выбрать город вылета
 inputCitiesFrom.addEventListener('input', () => {
     showCities(inputCitiesFrom, dropdownCitiesFrom);
 });
 
+
+// при наборе чего либо в инпуте города прилета вызываем функцию, помогающую выбрать город прилета
 inputCitiesTo.addEventListener('input', () => {
     showCities(inputCitiesTo, dropdownCitiesTo);
 });
 
-const citiesPush =(input,list) => {
+
+
+// помещаем в переменную функцию выбора города в выпадающем списке
+const cityPush = (input, list) => {
     const target = event.target;
     if (target.tagName.toLowerCase() === 'li') {
         input.value = target.textContent;
         list.textContent = '';
-
     }
-
 };
 
 
-
-
+// вешаем событие выбора нужного города вылета при клике на элемент выпадающего списка
 dropdownCitiesFrom.addEventListener('click', (event) => {
-    citiesPush(inputCitiesFrom,dropdownCitiesFrom);
-
+    cityPush(inputCitiesFrom, dropdownCitiesFrom);
 });
 
+
+// вешаем событие выбора нужного города прилета при клике на элемент выпадающего списка
 dropdownCitiesTo.addEventListener('click', (event) => {
-    citiesPush(inputCitiesTo,dropdownCitiesTo);
+    cityPush(inputCitiesTo, dropdownCitiesTo);
+});
+
+
+//fuction calls
+getData(citiesApi, (data) => {
+
 });
