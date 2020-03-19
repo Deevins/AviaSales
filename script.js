@@ -14,7 +14,7 @@ let cities = [];
 citiesApi = 'dataBase/cities.json';
 proxy = 'https://cors-anywhere.herokuapp.com/',
 API_KEY = 'fc159f18193c7078daedbf2e6a5fa6c1',
-calendar = 'http://min-prices.aviasales.ru/calendar_preload';
+CALENDAR = 'http://min-prices.aviasales.ru/calendar_preload';
 
 const getData = (url, callback) => {
     const request = new XMLHttpRequest();
@@ -93,5 +93,8 @@ dropdownCitiesTo.addEventListener('click', (event) => {
 
 //fuction calls
 getData(citiesApi, (data) => {
-
+    city = JSON.parse(data).filter(item => item.name);
 });
+
+const currentRequest = CALENDAR + `?origin=SVX&destination=KGD&depart_date=2020-05-25`;
+getData(currentRequest, data => console.log(JSON.parse(data)));
